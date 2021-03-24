@@ -1,0 +1,18 @@
+{
+  "name": "sckk_server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Demidovez/sckk_server.git",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dateformat": "^4.4.1",
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.3.5",
+    "xmlhttprequest": "^1.8.0"
+  }
+}
