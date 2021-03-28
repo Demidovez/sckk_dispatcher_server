@@ -21,10 +21,39 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //  Достаем из БД все проблемы
-app.get("/all_problems", async (req, res) => {
-  const propblems = await database.getAllProblems();
+app.post("/all_problems", async (req, res) => {
+  const { searchData } = req.body;
 
-  res.json(propblems);
+  const problems = await database.getAllProblems(searchData);
+
+  res.json(problems);
+});
+
+//  Добавляем новую проблему
+app.post("/add_problem", async (req, res) => {
+  const { problemData } = req.body;
+
+  const result = await database.addProblem(problemData);
+
+  res.json(result);
+});
+
+//  Обновляем проблему
+app.post("/edit_problem", async (req, res) => {
+  const { problem } = req.body;
+
+  const editedProblem = await database.editProblem(problem);
+
+  res.json(editedProblem);
+});
+
+// Удаляем проблему по ID
+app.post("/delete_problem", async (req, res) => {
+  const { problemId } = req.body;
+
+  const result = await database.deleteProblem(problemId);
+
+  res.json(result);
 });
 
 // Установливаем порт, и слушаем запросы

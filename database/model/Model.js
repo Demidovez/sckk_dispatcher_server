@@ -9,19 +9,7 @@ class Model {
         primaryKey: true,
         allowNull: false,
       },
-      problem_code: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      location: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      owner: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      title: {
+      name: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
@@ -34,6 +22,18 @@ class Model {
         allowNull: true,
       },
       comment: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      owner: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      problem_code: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      area: {
         type: Sequelize.TEXT,
         allowNull: true,
       },

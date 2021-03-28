@@ -2,9 +2,17 @@ const Sequelize = require("sequelize");
 const { Op } = require("sequelize");
 const config = require("../config/config");
 const Model = require("./model/Model");
+const Helper = require("../helper/helper");
 
 // Определяем объект, где лежат все модели БД
 const model = new Model();
+
+const RESULT = {
+  SUCCESS: 0,
+  ERROR: 1,
+  DELETED: 2,
+  EDITED: 3,
+};
 
 class Database {
   constructor() {
@@ -35,18 +43,148 @@ class Database {
   }
 
   // Метод для сохранения проблемы в БД в таблицу problems
-  insertNewProblem(problem) {
-    this.model_problems.create(problem).catch((err) => console.log(err));
+  async addProblem(problemData) {
+    const {
+      name,
+      text,
+      reason,
+      comment,
+      owner,
+      area,
+      problem_code,
+      date,
+      is_done,
+    } = problemData;
+
+    let result = await this.model_problems
+      .create({
+        name: name,
+        text: text,
+        reason: reason,
+        comment: comment,
+        owner: owner,
+        area: area,
+        problem_code: problem_code,
+        date: date,
+        is_done: is_done,
+        is_hide: false,
+      })
+      .then(() => ({ result: RESULT.SUCCESS }))
+      .catch(() => ({ result: RESULT.ERROR }));
+
+    return result;
+  }
+
+  // Обновляем проблему
+  async editProblem(problem) {
+    const {
+      id,
+      name,
+      text,
+      reason,
+      comment,
+      owner,
+      area,
+      problem_code,
+      date,
+      is_done,
+    } = problem;
+
+    let result = await this.model_problems
+      .update(
+        {
+          name: name,
+          text: text,
+          reason: reason,
+          comment: comment,
+          owner: owner,
+          area: area,
+          problem_code: problem_code,
+          date: date,
+          is_done: is_done,
+        },
+        {
+          where: {
+            id: id,
+          },
+        }
+      )
+      .then((r) => ({ result: RESULT.EDITED }))
+      .catch(() => ({ result: RESULT.ERROR }));
+
+    return result;
+  }
+
+  // Удаляем проблему по ID
+  async deleteProblem(problemId) {
+    let result = await this.model_problems
+      .update(
+        { is_hide: true },
+        {
+          where: {
+            id: problemId,
+          },
+        }
+      )
+      .then(() => ({ result: RESULT.DELETED }))
+      .catch(() => ({ result: RESULT.ERROR }));
+
+    return result;
   }
 
   // Достаем все проблемы
-  async getAllProblems() {
+  async getAllProblems(searchData) {
+    const {
+      searchStr,
+      isActual,
+      isDone,
+      orderValue,
+      fromDate,
+      toDate,
+      areas,
+      problemCodes,
+    } = searchData;
+
     let { rows, count } = await this.model_problems
       .findAndCountAll({
-        where: {},
+        where: {
+          searchStr: Sequelize.where(
+            Sequelize.fn("concat", ...Helper.defineWhereColumnsSearch()),
+            {
+              [Op.like]: "%" + searchStr.toLowerCase() + "%",
+            }
+          ),
+          date: {
+            [Op.between]: [
+              fromDate ? fromDate : new Date("2000-01-01"),
+              toDate ? toDate : new Date("2200-01-01"),
+            ],
+          },
+          area: areas.length ? { [Op.in]: areas } : { [Op.ne]: -1 },
+          problem_code: problemCodes.length
+            ? { [Op.in]: problemCodes }
+            : { [Op.ne]: -1 },
+          is_done:
+            (isDone && isActual) || (!isDone && !isActual)
+              ? { [Op.ne]: -1 }
+              : isDone || !isActual,
+          is_hide: false,
+        },
         limit: 15,
         offset: 0,
-        order: [["id", "DESC"]],
+        order: orderValue ? orderValue : [["id", "DESC"]],
+        attributes: [
+          "id",
+          "name",
+          "text",
+          "reason",
+          "comment",
+          "owner",
+          "problem_code",
+          "area",
+          "date",
+          "is_done",
+        ],
       })
       .catch(() => null);
 
