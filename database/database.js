@@ -38,6 +38,11 @@ class Database {
       model.getProblemsModel()
     );
 
+    this.model_problems_users = this.createdConnection.define(
+      config.PROBLEMS_USERS_TABLE,
+      model.getProblemsUsersModel()
+    );
+
     // Проводим синхронизацию с БД
     this.createdConnection.sync().catch((err) => console.log(err));
   }

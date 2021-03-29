@@ -51,6 +51,45 @@ class Model {
       },
     };
   }
+
+  getProblemsUsersModel() {
+    return {
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false,
+      },
+      login: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      firstname: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      lastname: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      role: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      isActive: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
+      password: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      config: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+    };
+  }
 }
 
 module.exports = Model;
