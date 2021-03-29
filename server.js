@@ -22,9 +22,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //  Достаем из БД все проблемы
 app.post("/all_problems", async (req, res) => {
-  const { searchData } = req.body;
+  const { searchData, offset } = req.body;
 
-  const problems = await database.getAllProblems(searchData);
+  const problems = await database.getAllProblems(searchData, offset);
 
   res.json(problems);
 });

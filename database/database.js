@@ -8,7 +8,7 @@ const Helper = require("../helper/helper");
 const model = new Model();
 
 const RESULT = {
-  SUCCESS: 0,
+  ADDED: 0,
   ERROR: 1,
   DELETED: 2,
   EDITED: 3,
@@ -69,7 +69,7 @@ class Database {
         is_done: is_done,
         is_hide: false,
       })
-      .then(() => ({ result: RESULT.SUCCESS }))
+      .then(() => ({ result: RESULT.ADDED }))
       .catch(() => ({ result: RESULT.ERROR }));
 
     return result;
@@ -133,7 +133,7 @@ class Database {
   }
 
   // Достаем все проблемы
-  async getAllProblems(searchData) {
+  async getAllProblems(searchData, offset = 0) {
     const {
       searchStr,
       isActual,
@@ -171,7 +171,7 @@ class Database {
           is_hide: false,
         },
         limit: 15,
-        offset: 0,
+        offset: offset ? offset : 0,
         order: orderValue ? orderValue : [["id", "DESC"]],
         attributes: [
           "id",
