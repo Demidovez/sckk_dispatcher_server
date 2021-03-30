@@ -3,13 +3,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const Database = require("./database/database");
 const cors = require("cors");
-const axios = require("axios");
-const jsonwebtoken = require("jsonwebtoken");
-const jwt = require("express-jwt");
 const cookieParser = require("cookie-parser");
-
-// Ключ для авторизации
-const jwtSecret = "secret123";
+const { generateToken, verifyToken } = require("./helper/auth");
 
 // Создаем веб-сервер
 const app = express();
@@ -20,20 +15,16 @@ const database = new Database();
 // Делаем наш парсинг в формате json
 app.use(bodyParser.json());
 
-// Добавляем дополнительные зоголовки дял запросов
-app.use(cors());
+// Добавляем дополнительные зоголовки для запросов
+app.use(
+  cors({
+    credentials: true,
+    origin: ["http://localhost:3000", "http://10.1.22.2:5526"],
+  })
+);
 
 // Добавляем парсер Cookies
 app.use(cookieParser());
-
-// Проверяем токен в Cookies
-app.use(
-  jwt({
-    secret: jwtSecret,
-    algorithms: ["HS256"],
-    getToken: (req) => req.cookies.token,
-  })
-);
 
 // Парсит запросы по типу: application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -57,7 +48,7 @@ app.post("/add_problem", async (req, res) => {
 });
 
 //  Обновляем проблему
-app.post("/edit_problem", async (req, res) => {
+app.post("/edit_problem", verifyToken, async (req, res) => {
   const { problem } = req.body;
 
   const editedProblem = await database.editProblem(problem);
@@ -81,8 +72,7 @@ app.post("/login", async (req, res) => {
   const user = await database.getUser(login, password);
 
   if (user) {
-    const token = jsonwebtoken.sign(user, jwtSecret);
-    res.cookie("token", token, { httpOnly: true });
+    await generateToken(res, { id: user.id });
   }
 
   res.json(user);
