@@ -195,6 +195,18 @@ class Database {
 
     return { problems: rows, count };
   }
+
+  // Пытаемся залогиниться
+  async getUser(login, password) {
+    return {
+      id: 999,
+      login: "JohnDoe",
+      firstname: "John",
+      lastname: "Doe",
+      role: "ADMIN",
+      config: {},
+    };
+  }
 }
 
 module.exports = Database;
