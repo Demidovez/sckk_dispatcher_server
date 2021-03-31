@@ -4,7 +4,12 @@ const bodyParser = require("body-parser");
 const Database = require("./database/database");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const { generateToken, verifyToken, verifyUser } = require("./helper/auth");
+const {
+  generateToken,
+  verifyToken,
+  verifyUser,
+  clearCookie,
+} = require("./helper/auth");
 
 // Создаем веб-сервер
 const app = express();
@@ -76,6 +81,12 @@ app.post("/login", async (req, res) => {
   }
 
   res.json(user);
+});
+
+// Пытаемся разлогинить пользователя
+app.get("/logout", async (req, res) => {
+  res.clearCookie("token");
+  res.json(true);
 });
 
 // Достаем пользователя если он есть
