@@ -31,5 +31,30 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
+const verifyUser = async (req, res, next) => {
+  const token = req.cookies.token || "";
+
+  try {
+    if (!token) {
+      req.user = {
+        id: null,
+      };
+
+      next();
+    }
+
+    const decrypt = await jwt.verify(token, config.TOKEN_KEY);
+
+    req.user = {
+      id: decrypt.id,
+    };
+
+    next();
+  } catch (err) {
+    return res.status(500).json(err.toString());
+  }
+};
+
 module.exports.generateToken = generateToken;
 module.exports.verifyToken = verifyToken;
+module.exports.verifyUser = verifyUser;

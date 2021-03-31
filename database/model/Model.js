@@ -76,7 +76,7 @@ class Model {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      isActive: {
+      is_active: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
       },

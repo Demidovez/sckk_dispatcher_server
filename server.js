@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const Database = require("./database/database");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const { generateToken, verifyToken } = require("./helper/auth");
+const { generateToken, verifyToken, verifyUser } = require("./helper/auth");
 
 // Создаем веб-сервер
 const app = express();
@@ -39,7 +39,7 @@ app.post("/all_problems", async (req, res) => {
 });
 
 //  Добавляем новую проблему
-app.post("/add_problem", async (req, res) => {
+app.post("/add_problem", verifyToken, async (req, res) => {
   const { problemData } = req.body;
 
   const result = await database.addProblem(problemData);
@@ -57,7 +57,7 @@ app.post("/edit_problem", verifyToken, async (req, res) => {
 });
 
 // Удаляем проблему по ID
-app.post("/delete_problem", async (req, res) => {
+app.post("/delete_problem", verifyToken, async (req, res) => {
   const { problemId } = req.body;
 
   const result = await database.deleteProblem(problemId);
@@ -69,13 +69,26 @@ app.post("/delete_problem", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { login, password } = req.body;
 
-  const user = await database.getUser(login, password);
+  const user = await database.loginUser(login, password);
 
   if (user) {
     await generateToken(res, { id: user.id });
   }
 
   res.json(user);
+});
+
+// Достаем пользователя если он есть
+app.get("/get_user", verifyUser, async (req, res) => {
+  const { id } = req.user;
+
+  if (id) {
+    const user = await database.getUser(id);
+
+    res.json(user);
+  } else {
+    res.json(null);
+  }
 });
 
 // Установливаем порт, и слушаем запросы

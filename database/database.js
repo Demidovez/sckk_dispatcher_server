@@ -197,15 +197,56 @@ class Database {
   }
 
   // Пытаемся залогиниться
-  async getUser(login, password) {
-    return {
-      id: 999,
-      login: "JohnDoe",
-      firstname: "John",
-      lastname: "Doe",
-      role: "ADMIN",
-      config: {},
-    };
+  async loginUser(login, password) {
+    const user = await this.model_problems_users
+      .findOne({
+        where: {
+          [Op.and]: [
+            Sequelize.where(
+              Sequelize.fn("lower", Sequelize.col("login")),
+              Sequelize.fn("lower", login)
+            ),
+            {
+              password: password,
+            },
+          ],
+        },
+        attributes: [
+          "id",
+          "login",
+          "firstname",
+          "lastname",
+          "role",
+          "password",
+          "config",
+        ],
+      })
+      .catch(() => null);
+
+    return user;
+  }
+
+  // Достаем пользователя
+  async getUser(id) {
+    const user = await this.model_problems_users
+      .findOne({
+        where: {
+          id,
+          is_active: true,
+        },
+        attributes: [
+          "id",
+          "login",
+          "firstname",
+          "lastname",
+          "role",
+          "password",
+          "config",
+        ],
+      })
+      .catch(() => null);
+
+    return user;
   }
 }
 
