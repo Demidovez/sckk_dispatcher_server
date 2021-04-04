@@ -24,7 +24,13 @@ app.use(bodyParser.json());
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:3000", "http://10.1.22.2:5526"],
+    origin: [
+      "http://localhost:4000",
+      "http://10.1.22.2:5526",
+      "http://10.1.22.2",
+      "http://uisvr",
+      "uisvr",
+    ],
   })
 );
 
