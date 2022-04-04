@@ -1,23 +1,32 @@
 {
-  "name": "sckk_server",
+  "name": "sckk_dispatcher_server",
+  "repository": "https://github.com/Demidovez/sckk_dispatcher_server.git",
   "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/Demidovez/sckk_server.git",
-  "license": "MIT",
+  "description": "",
+  "main": "./src/index.ts",
+  "scripts": {
+    "start": "ts-node -r dotenv/config src/index.ts",
+    "dev": "npx nodemon"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.1",
-    "body-parser": "^1.19.0",
-    "cookie-parser": "^1.4.5",
+    "axios": "^0.26.0",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dateformat": "^4.4.1",
-    "express": "^4.17.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
-    "mysql": "^2.18.1",
-    "mysql2": "^2.2.5",
-    "sequelize": "^6.3.5",
-    "xmlhttprequest": "^1.8.0"
+    "mssql": "^8.0.2"
   },
   "devDependencies": {
-    "prettier": "^2.2.1"
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/mssql": "^7.1.5",
+    "@types/node": "^17.0.18",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
   }
 }

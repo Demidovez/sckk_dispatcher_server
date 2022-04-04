@@ -1,0 +1,9 @@
+version: "3.3"
+services:
+  sckk_dispatcher_server:
+    build: .
+    restart: unless-stopped
+    image: sckk_dispatcher_server
+    container_name: sckk_dispatcher_server_co
+    ports:
+      - "5108:5108"
