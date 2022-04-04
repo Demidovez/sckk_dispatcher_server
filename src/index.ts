@@ -13,7 +13,12 @@ const port = process.env.PORT || 5000;
 app.use(
   cors({
     credentials: true,
-    origin: ["http://10.1.15.244", "http://localhost:4000"],
+    origin: [
+      "http://10.1.15.244",
+      "http://localhost:4000",
+      "http://10.1.22.2",
+      "http://uisvr",
+    ],
   })
 );
 // Добавляем парсер Cookies
